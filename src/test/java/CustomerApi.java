@@ -3,7 +3,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
-import java.nio.charset.StandardCharsets;
 
 public class CustomerApi {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -11,7 +10,7 @@ public class CustomerApi {
         try {
             String customerJson = mapper.writeValueAsString(customer);
             RestAssured.baseURI = Config.BASE_URL;
-            //String metadataJson = "{ \"FullAddress\":\"\" }";
+            String metadataJson = "{ \"FullAddress\":\"\" }";
 
             return given()
                     .header("authorization", Config.token)
@@ -20,8 +19,8 @@ public class CustomerApi {
                     .header("x-retailer-code", Config.RETAILER_CODE)
                     .header("x-retailer-id", Config.RETAILER_ID)
                     .contentType(ContentType.MULTIPART)
-                    .multiPart("Customer", customerJson.getBytes(StandardCharsets.UTF_8), "application/json")
-                    //.multiPart("Metadata", metadataJson.getBytes(StandardCharsets.UTF_8), "application/json")
+                    .multiPart("Customer",customerJson,"application/json")
+                    .multiPart("Metadata",metadataJson,"application/json")
                     .when()
                     .post("/api/customers")
                     .then()
